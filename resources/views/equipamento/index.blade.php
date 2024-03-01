@@ -1,16 +1,16 @@
-<x-layoutPadrao title="Series">
+<x-layoutPadrao title="Equipamento">
 <div>
 <a href="{{route('equipamento.criar')}}" class="btn btn-dark mb-2">Adicionar</a>
 
-@isset($mensagemS)
+@isset($mensagemSucesso)
 <div class="alert alert-success">
-    {{ $mensagemS }}
+    {{ $mensagemSucesso }}
 </div>
 @endisset
 
-@isset($mensagemE)
+@isset($mensagemErro)
 <div class="alert alert-error">
-    {{ $mensagemE }}
+    {{ $mensagemErro }}
 </div>
 @endisset
 

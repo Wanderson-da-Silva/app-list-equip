@@ -11,67 +11,76 @@ use Illuminate\Support\Facades\DB;
 
 class EquipamentosController extends Controller
 {
-    public function index(Request $request)
-    {
-        $equipamentos = Equipamento::all();
-        $mensagemSucesso = session('mensagem.sucesso');
+  public function index(Request $request)
+  {
+    $equipamentos = Equipamento::all();
 
-        return view('equipamento.index')->with('equipamentos', $equipamentos)
-            ->with('mensagemSucesso', $mensagemSucesso);
+    // verificando se mensagem existe na sessao
+    if (null !== $request->session()->get('mensagem.sucesso') || null !== $request->session()->get('mensagem.erro')) {
+      $mensagemSucesso = $request->session()->get('mensagem.sucesso');
+      $mensagemErro = $request->session()->get('mensagem.erro');
+      if (null === $mensagemSucesso) {
+        return  view('equipamento.index')->with('equipamentos', $equipamentos)->with('mensagemErro', $mensagemErro);
+      } else {
+        return view('equipamento.index')->with('equipamentos', $equipamentos)->with('mensagemSucesso', $mensagemSucesso);
+      }
     }
 
-    public function create()
-    {
-        return view('equipamento.create');
-    }
+    return view('equipamento.index')->with('equipamentos', $equipamentos);
+  }
 
-    public function store(EquipamentosFormRequest $request)
-    {
-      try {
-        DB::beginTransaction();
+  public function create()
+  {
+    return view('equipamento.create');
+  }
+
+  public function store(EquipamentosFormRequest $request)
+  {
+    try {
+      DB::beginTransaction();
       $equip = Equipamento::create($request->all());
       DB::commit();
 
       return to_route('equipamentos.listar')
-            ->with('mensagem.sucesso', "Equipamento '{$equip->nome}' adicionada com sucesso");
-      } catch (\Throwable $th) {
-        return to_route('equipamentos.listar')
-            ->with('mensagem.erro', "Equipamento '{$equip->nome}' não adicionada. Erro: '{$th}'");
-      }  
-        
+        ->with('mensagem.sucesso', "Equipamento '{$equip->nome}' adicionada com sucesso");
+    } catch (\Throwable $th) {
+      DB::rollback();
+      return to_route('equipamentos.listar')
+        ->with('mensagem.erro', "Equipamento '{$equip->nome}' não adicionada. Erro: '{$th}'");
     }
+  }
 
-    public function destroy(Equipamento $equipamento)
-    {
-        $equipamento->delete();
+  public function destroy(Equipamento $equipamento)
+  {
+    $equipamento->delete();
 
-        return to_route('equipamentos.listar')
-            ->with('mensagem.sucesso', "Equipamento '{$equipamento->nome}' removido com sucesso");
-    }
+    return to_route('equipamentos.listar')
+      ->with('mensagem.sucesso', "Equipamento '{$equipamento->nome}' removido com sucesso");
+  }
 
-    public function edit(Request $request)
-    {
-        
-      $nomeAnim = $request->equipamento;
+  public function edit(Request $request)
+  {
 
-      $res = Equipamento::find($nomeAnim);
+    $nomeAnim = $request->equipamento;
 
-      return view('equipamento.edit')->with('res', $res );
-    }
+    $res = Equipamento::find($nomeAnim);
 
-    public function update(Equipamento $equipamento, EquipamentosFormRequest $request)
-    {
-       // dd($request->all());
-       $res = Equipamento::find($request->id);
+    return view('equipamento.edit')->with('res', $res);
+  }
+
+  public function update(Equipamento $equipamento, EquipamentosFormRequest $request)
+  {
+    // dd($request->all());
+    $res = Equipamento::find($request->id);
 
 
-      //$equipamento->fill($request->all());
-      //dd($equipamento);
+    //$equipamento->fill($request->all());
+    //dd($equipamento);
 
-      $res->update($request->all());
-              //$equipamento->update();
+    $res->update($request->all());
+    //$equipamento->update();
 
-        return to_route('equipamentos.listar')
-            ->with('mensagem.sucesso', "Equipamento '{$request->nome}' atualizado com sucesso");
-    }
+    return to_route('equipamentos.listar')
+      ->with('mensagem.sucesso', "Equipamento '{$request->nome}' atualizado com sucesso");
+  }
 }
