@@ -27,32 +27,18 @@ class EquipamentosController extends Controller
 
     public function store(EquipamentosFormRequest $request)
     {
-        $equip = Equipamento::create($request->all());
-        //$marc = [];
-        //for ($i = 1; $i <= $request->marcasQty; $i++) {
-            //esta seno preenchido um array com a numeracao de marcas vinculadas ao equipamento
-            //uma serie tem várias temporadas, esse array criaria as temporadas vinculadas a uma
-            //unica serie com somente um insert longo
-          //  $marcas[] = [
-            //    'equip_id' => $equip->id,
-              //  'number' => $i,
-            //];
-       // }
-        //Marca::insert($marc);
+      try {
+        DB::beginTransaction();
+      $equip = Equipamento::create($request->all());
+      DB::commit();
 
-        //$fornecedores = [];
-        //foreach ($equip->marcas as $marca) {
-          //  for ($j = 1; $j <= $request->fornecedoresPerSeason; $j++) {
-            //    $fornecedores[] = [
-              //      'marca_id' => $marca->id,
-                //    'number' => $j
-                //];
-           // }
-       // }
-        //Fornecedor::insert($fornecedor);
-
-        return to_route('equipamentos.listar')
+      return to_route('equipamentos.listar')
             ->with('mensagem.sucesso', "Equipamento '{$equip->nome}' adicionada com sucesso");
+      } catch (\Throwable $th) {
+        return to_route('equipamentos.listar')
+            ->with('mensagem.erro', "Equipamento '{$equip->nome}' não adicionada. Erro: '{$th}'");
+      }  
+        
     }
 
     public function destroy(Equipamento $equipamento)
