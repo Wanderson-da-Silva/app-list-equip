@@ -19,7 +19,7 @@
   </div>
   </div>
 
-  <input type="text" id="id" name="id" value="{{$res->id}}" >
+  <input type="hidden" id="id" name="id" value="{{$res->id}}" >
     <button type="submit" class="btn btn-primary"> Salvar</button>
 
 
