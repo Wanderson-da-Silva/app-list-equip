@@ -22,10 +22,14 @@ class EquipamentosFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nome'=> ['required ', 'min:3']
+            'nome'=> ['required ', 'min:3'],
+            'id_marca'=> ['required','numeric'],
+            'id_fornecedor' => ['required','numeric']
         ];
     }
     public function messages(){
-        return ['nome.required' => 'campo nome Obrigatório!' , 'nome.min' => 'Minimo de caracteres 3 !' ];
+        return ['nome.required' => 'campo nome Obrigatório!' , 'nome.min' => 'Minimo de caracteres 3 !',
+                'id_marca.required' => 'Campo Marca Obrigatório', 'id_marca.numeric' => 'id de marca não numerico',
+                'id_fornecedor.required' => 'Campo Fornecedor Obrigatório', 'id_fornecedor.numeric' => 'id de fornecedor não numerico' ];
     }
 }
