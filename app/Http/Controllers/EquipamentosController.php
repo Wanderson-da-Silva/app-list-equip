@@ -31,7 +31,10 @@ class EquipamentosController extends Controller
 
   public function create()
   {
-    return view('equipamento.create');
+
+    $marcas = Marca::all();
+    $forns = Fornecedor::all();
+    return view('equipamento.create')->with('marcas', $marcas)->with('forns', $forns);
   }
 
   public function store(EquipamentosFormRequest $request)
