@@ -45,17 +45,27 @@ class EquipamentosController extends Controller
         ->with('mensagem.sucesso', "Equipamento '{$equip->nome}' adicionada com sucesso");
     } catch (\Throwable $th) {
       DB::rollback();
+      //Erro: '{$th}' retirado - em caso de erro acrescentar e testar
       return to_route('equipamentos.listar')
-        ->with('mensagem.erro', "Equipamento '{$equip->nome}' não adicionada. Erro: '{$th}'");
+        ->with('mensagem.erro', "Equipamento '{$request->nome}' não adicionada. Erro !");
     }
   }
 
   public function destroy(Equipamento $equipamento)
   {
-    $equipamento->delete();
+    try {
+      DB::beginTransaction();
+      $equipamento->delete();
+      DB::commit();
 
-    return to_route('equipamentos.listar')
-      ->with('mensagem.sucesso', "Equipamento '{$equipamento->nome}' removido com sucesso");
+      return to_route('equipamentos.listar')
+        ->with('mensagem.sucesso', "Equipamento '{$equipamento->nome}' removido com sucesso");
+    } catch (\Throwable $th) {
+      DB::rollback();
+      //Erro: '{$th}' retirado - em caso de erro acrescentar e testar
+      return to_route('equipamentos.listar')
+        ->with('mensagem.erro', "Equipamento '{$equipamento->nome}' não excluido. Erro !");
+    }
   }
 
   public function edit(Request $request)
@@ -63,24 +73,42 @@ class EquipamentosController extends Controller
 
     $nomeAnim = $request->equipamento;
 
-    $res = Equipamento::find($nomeAnim);
+    try {
+      DB::beginTransaction();
+      $res = Equipamento::find($nomeAnim);
+      DB::commit();
 
-    return view('equipamento.edit')->with('res', $res);
+      return view('equipamento.edit')->with('res', $res);
+    } catch (\Throwable $th) {
+
+      //Erro: '{$th}' retirado - em caso de erro acrescentar e testar
+      return to_route('equipamentos.listar')
+        ->with('mensagem.erro', "Equipamento de ID '{$nomeAnim}' não encontrado. Erro !");
+    }
   }
 
-  public function update(Equipamento $equipamento, EquipamentosFormRequest $request)
+  public function update(EquipamentosFormRequest $request)
   {
     // dd($request->all());
-    $res = Equipamento::find($request->id);
 
+    try {
+      DB::beginTransaction();
+      $res = Equipamento::find($request->id);
 
-    //$equipamento->fill($request->all());
-    //dd($equipamento);
+      //$equipamento->fill($request->all());
+      //$equipamento->update();
 
-    $res->update($request->all());
-    //$equipamento->update();
+      $res->update($request->all());
+      DB::commit();
+      return to_route('equipamentos.listar')
+        ->with('mensagem.sucesso', "Equipamento '{$request->nome}' atualizado com sucesso");
 
-    return to_route('equipamentos.listar')
-      ->with('mensagem.sucesso', "Equipamento '{$request->nome}' atualizado com sucesso");
+      
+    } catch (\Throwable $th) {
+      DB::rollback();
+      //Erro: '{$th}' retirado - em caso de erro acrescentar e testar
+      return to_route('equipamentos.listar')
+        ->with('mensagem.erro', "Equipamento de ID '{$request->id}' não encontrado ou erro na atualização. Erro !");
+    }
   }
 }
