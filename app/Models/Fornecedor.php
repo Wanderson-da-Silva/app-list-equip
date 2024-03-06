@@ -9,7 +9,7 @@ class Fornecedor extends Model
 {
     use HasFactory;
     //protected $primaryKey = 'idSerie';
-    protected $fillable = ['nome','CNPJ','updated_at'];
+    protected $fillable = ['nome','CNPJ','id','updated_at'];
     protected $table = 'fornecedor';
     //ativando isso sempre que buscar as series vou buscar tambem as temporadas da serie
     //protected $with = ['temporadas'];

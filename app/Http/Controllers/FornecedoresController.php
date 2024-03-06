@@ -11,69 +11,105 @@ use Illuminate\Support\Facades\DB;
 
 class FornecedoresController extends Controller
 {
-    public function index(Request $request)
-    {
-        $forn = Fornecedor::all();
-        $mensagemSucesso = session('mensagem.sucesso');
+  public function index(Request $request)
+  {
+    $forns = Fornecedor::all();
 
-        return view('fornecedors.index')->with('fornecedor', $fornecedor)
-            ->with('mensagemSucesso', $mensagemSucesso);
+    // verificando se mensagem existe na sessao
+    if (null !== $request->session()->get('mensagem.sucesso') || null !== $request->session()->get('mensagem.erro')) {
+      $mensagemSucesso = $request->session()->get('mensagem.sucesso');
+      $mensagemErro = $request->session()->get('mensagem.erro');
+      if (null === $mensagemSucesso) {
+        return  view('fornecedor.index')->with('forns', $forns)->with('mensagemErro', $mensagemErro);
+      } else {
+        return view('fornecedor.index')->with('forns', $forns)->with('mensagemSucesso', $mensagemSucesso);
+      }
     }
 
-    public function create()
-    {
-        return view('fornecedor.create');
+    return view('fornecedor.index')->with('forns', $forns);
+  }
+
+  public function create()
+  {
+
+    return view('fornecedor.create');
+  }
+
+  public function store(FornecedoresFormRequest $request)
+  {
+    try {
+      DB::beginTransaction();
+      $forn = Fornecedor::create($request->all());
+      DB::commit();
+
+      return to_route('fornecedores.listar')
+        ->with('mensagem.sucesso', "Fornecedor '{$forn->nome}' adicionado com sucesso");
+    } catch (\Throwable $th) {
+      DB::rollback();
+      //Erro: '{$th}' retirado - em caso de erro acrescentar e testar
+      return to_route('fornecedores.listar')
+        ->with('mensagem.erro', "Fornecedor '{$request->nome}' não adicionado. Erro  '{$th}'!");
     }
+  }
 
-    public function store(FornecedorsFormRequest $request)
-    {
-        $fornecedor = Fornecedors::create($request->all());
-        //$marc = [];
-        //for ($i = 1; $i <= $request->marcasQty; $i++) {
-            //esta seno preenchido um array com a numeracao de marcas vinculadas ao equipamento
-            //uma serie tem várias temporadas, esse array criaria as temporadas vinculadas a uma
-            //unica serie com somente um insert longo
-          //  $marcas[] = [
-            //    'equip_id' => $equip->id,
-              //  'number' => $i,
-            //];
-       // }
-        //Marca::insert($marc);
+  public function destroy(Fornecedor $fornecedor)
+  {
+    try {
+      DB::beginTransaction();
+      $fornecedor->delete();
+      DB::commit();
 
-        //$fornecedores = [];
-        //foreach ($equip->marcas as $marca) {
-          //  for ($j = 1; $j <= $request->fornecedoresPerSeason; $j++) {
-            //    $fornecedores[] = [
-              //      'marca_id' => $marca->id,
-                //    'number' => $j
-                //];
-           // }
-       // }
-        //Fornecedor::insert($fornecedor);
-
-        return to_route('fornecedors.index')
-            ->with('mensagem.sucesso', "Fornecedor '{$fornecedor->nome}' adicionado com sucesso");
+      return to_route('fornecedores.listar')
+        ->with('mensagem.sucesso', "Fornecedor '{$fornecedor->nome}' removido com sucesso");
+    } catch (\Throwable $th) {
+      DB::rollback();
+      //Erro: '{$th}' retirado - em caso de erro acrescentar e testar
+      return to_route('fornecedores.listar')
+        ->with('mensagem.erro', "Fornecedor '{$fornecedor->nome}' não excluido. Erro !");
     }
+  }
 
-    public function destroy(Fornecedor $fornecedors)
-    {
-        $marcas->delete();
+  public function edit(Request $request)
+  {
 
-        return to_route('fornecedors.index')
-            ->with('mensagem.sucesso', "Fornecedor '{$marcas->nome}' removido com sucesso");
+    $id = $request->fornecedor;
+
+    try {
+      DB::beginTransaction();
+      $res = Fornecedor::find($id);
+      DB::commit();
+
+      return view('fornecedor.edit')->with('res', $res);
+    } catch (\Throwable $th) {
+
+      //Erro: '{$th}' retirado - em caso de erro acrescentar e testar
+      return to_route('fornecedores.listar')
+        ->with('mensagem.erro', "Fornecedor de ID '{$id}' não encontrado. Erro !");
     }
+  }
 
-    public function edit(Fornecedor $fornecedor)
-    {
-        return view('fornecedor.edit')->with('fornecedor', $fornecedor);
+  public function update(FornecedoresFormRequest $request)
+  {
+    // dd($request->all());
+
+    try {
+      DB::beginTransaction();
+      $res = Fornecedor::find($request->id);
+
+      //$equipamento->fill($request->all());
+      //$equipamento->update();
+
+      $res->update($request->all());
+      DB::commit();
+      return to_route('fornecedores.listar')
+        ->with('mensagem.sucesso', "Fornecedor '{$request->nome}' atualizado com sucesso");
+
+      
+    } catch (\Throwable $th) {
+      DB::rollback();
+      //Erro: '{$th}' retirado - em caso de erro acrescentar e testar
+      return to_route('fornecedores.listar')
+        ->with('mensagem.erro', "Fornecedor de ID '{$request->id}' não encontrado ou erro na atualização. Erro !");
     }
-
-    public function update(Fornecedor $fornecedor, FornecedorsFormRequest $request)
-    {
-        $fornecedor->fill($request->all());
-        $fornecedor->save();
-
-        return to_route('fornecedors.index')
-            ->with('mensagem.sucesso', "Fornecedor '{$fornecedors->nome}' atualizado com sucesso");
-    }
+  }
 }

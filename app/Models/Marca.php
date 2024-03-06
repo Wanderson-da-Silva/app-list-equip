@@ -10,7 +10,7 @@ class Marca extends Model
     use HasFactory;
     //public $timestamps = false;
     protected $table = 'marca';
-    protected $fillable = ['nome','updated_at'];
+    protected $fillable = ['nome','id','updated_at'];
     //public function fornecedor(){
         //relacao de muitos para um - essa temporada/equip possui/pertence a uma unica serie/marca
       // return $this->belongsTo(Fornecedor::class);
