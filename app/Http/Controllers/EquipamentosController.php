@@ -74,19 +74,26 @@ class EquipamentosController extends Controller
   public function edit(Request $request)
   {
 
-    $nomeAnim = $request->equipamento;
+    $id = $request->equipamento;
 
     try {
       DB::beginTransaction();
-      $res = Equipamento::find($nomeAnim);
+      $marcas = Marca::all();
+    $forns = Fornecedor::all();
+      //$res = Equipamento::find($id);
+      $res = Equipamento::select('equipamento.*', 'fornecedor.nome as nome_fornecedor', 'marca.nome as nome_marca')
+    ->join('fornecedor', 'equipamento.id_fornecedor', '=', 'fornecedor.id')
+    ->join('marca', 'equipamento.id_marca', '=', 'marca.id')
+    ->where('equipamento.id', '=', $id)
+    ->first();
       DB::commit();
-
-      return view('equipamento.edit')->with('res', $res);
+      //dd( $res);
+      return view('equipamento.edit')->with('res', $res)->with('marcas',$marcas)->with('forns',$forns);
     } catch (\Throwable $th) {
 
       //Erro: '{$th}' retirado - em caso de erro acrescentar e testar
       return to_route('equipamentos.listar')
-        ->with('mensagem.erro', "Equipamento de ID '{$nomeAnim}' não encontrado. Erro !");
+        ->with('mensagem.erro', "Equipamento de ID '{$id}' não encontrado. Erro !");
     }
   }
 

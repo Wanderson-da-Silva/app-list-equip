@@ -22,13 +22,13 @@
         <label class="form-label text-right">Marca:</label>
         <select type="text" class="form-control" name="id_marca" id="id_marca">
           @isset($marcas)
-
+          <option value="w"></option>
           @foreach($marcas as $marca)
           <option value="{{$marca->id}}">{{$marca->nome}}</option>
 
           @endforeach
           @endisset
-          @if(null !== $marcas)
+          @if(null === $marcas)
           <option value="w">sem marca</option>
           @endif
         </select><br />
@@ -37,13 +37,13 @@
         <label class="form-label text-right">Fornecedor:</label>
         <select type="text" class="form-control" name="id_fornecedor" id="id_fornecedor">
           @isset($forns)
-
+          <option value="w"></option>
           @foreach($forns as $forn)
           <option value="{{$forn->id}}">{{$forn->nome}}</option>
 
           @endforeach
           @endisset
-          @if(null !== $forns)
+          @if(null === $forns)
           <option value="y">sem fornecedor</option>
           @endif
         </select><br />
