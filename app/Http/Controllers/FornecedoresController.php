@@ -48,7 +48,7 @@ class FornecedoresController extends Controller
       DB::rollback();
       //Erro: '{$th}' retirado - em caso de erro acrescentar e testar
       return to_route('fornecedores.listar')
-        ->with('mensagem.erro', "Fornecedor '{$request->nome}' não adicionado. Erro  '{$th}'!");
+        ->with('mensagem.erro', "Fornecedor '{$request->nome}' não adicionado. Erro !");
     }
   }
 

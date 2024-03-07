@@ -86,6 +86,8 @@ class EquipamentosController extends Controller
     ->join('marca', 'equipamento.id_marca', '=', 'marca.id')
     ->where('equipamento.id', '=', $id)
     ->first();
+    //first pega o primeiro resultado da consulta, por usar o id ou retorna o valor procurado
+    // ou retorna nulo sem dados erro
       DB::commit();
       //dd( $res);
       return view('equipamento.edit')->with('res', $res)->with('marcas',$marcas)->with('forns',$forns);
