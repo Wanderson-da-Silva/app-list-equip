@@ -27,7 +27,7 @@
     </div>
     @endisset
     @isset($mensagemErro)
-    <div class="alert alert-success">
+    <div class="alert alert-danger">
         {{ $mensagemErro }}
     </div>
     @endisset

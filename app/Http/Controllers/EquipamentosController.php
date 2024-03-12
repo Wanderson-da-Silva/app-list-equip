@@ -6,11 +6,17 @@ use App\Http\Requests\EquipamentosFormRequest;
 use App\Models\Fornecedor;
 use App\Models\Marca;
 use App\Models\Equipamento;
+use App\Repositorios\EquipamentoRepositorio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class EquipamentosController extends Controller
 {
+
+  public function __construct(private EquipamentoRepositorio $equipReposit)
+  {
+  }
+
   public function index(Request $request)
   {
     $equipamentos = Equipamento::all();
@@ -39,33 +45,32 @@ class EquipamentosController extends Controller
 
   public function store(EquipamentosFormRequest $request)
   {
-    try {
-      DB::beginTransaction();
-      $equip = Equipamento::create($request->all());
-      DB::commit();
 
+    $dadosEquipamento = $request->only(['nome', 'id_fornecedor', 'id_marca']);
+
+    $equipa = $this->equipReposit->add($dadosEquipamento);
+    if ($equipa === true) {
       return to_route('equipamentos.listar')
-        ->with('mensagem.sucesso', "Equipamento '{$equip->nome}' adicionada com sucesso");
-    } catch (\Throwable $th) {
-      DB::rollback();
+        ->with('mensagem.sucesso', "Equipamento '{$dadosEquipamento['nome']}' adicionada com sucesso");
+    } else {
       //Erro: '{$th}' retirado - em caso de erro acrescentar e testar
+      //Erro: '{$equipa}' retirado - em caso de erro acrescentar e testar
       return to_route('equipamentos.listar')
-        ->with('mensagem.erro', "Equipamento '{$request->nome}' não adicionada. Erro !");
+        ->with('mensagem.erro', "Equipamento '{$dadosEquipamento['nome']}' não adicionada. Erro !");
     }
   }
 
   public function destroy(Equipamento $equipamento)
   {
-    try {
-      DB::beginTransaction();
-      $equipamento->delete();
-      DB::commit();
+
+    $equipa = $this->equipReposit->delete($equipamento);
+    if ($equipa === true) {
 
       return to_route('equipamentos.listar')
         ->with('mensagem.sucesso', "Equipamento '{$equipamento->nome}' removido com sucesso");
-    } catch (\Throwable $th) {
-      DB::rollback();
-      //Erro: '{$th}' retirado - em caso de erro acrescentar e testar
+    } else {
+
+      //Erro: '{$equipa}' retirado - em caso de erro acrescentar e testar
       return to_route('equipamentos.listar')
         ->with('mensagem.erro', "Equipamento '{$equipamento->nome}' não excluido. Erro !");
     }
@@ -76,26 +81,20 @@ class EquipamentosController extends Controller
 
     $id = $request->equipamento;
 
-    try {
-      DB::beginTransaction();
-      $marcas = Marca::all();
-    $forns = Fornecedor::all();
-      //$res = Equipamento::find($id);
-      $res = Equipamento::select('equipamento.*', 'fornecedor.nome as nome_fornecedor', 'marca.nome as nome_marca')
-    ->join('fornecedor', 'equipamento.id_fornecedor', '=', 'fornecedor.id')
-    ->join('marca', 'equipamento.id_marca', '=', 'marca.id')
-    ->where('equipamento.id', '=', $id)
-    ->first();
-    //first pega o primeiro resultado da consulta, por usar o id ou retorna o valor procurado
-    // ou retorna nulo sem dados erro
-      DB::commit();
-      //dd( $res);
-      return view('equipamento.edit')->with('res', $res)->with('marcas',$marcas)->with('forns',$forns);
-    } catch (\Throwable $th) {
 
+
+    $marcas = Marca::all();
+    $forns = Fornecedor::all();
+
+    $res = $this->equipReposit->findAltEquip($id);
+
+    if (!$res) {
       //Erro: '{$th}' retirado - em caso de erro acrescentar e testar
       return to_route('equipamentos.listar')
         ->with('mensagem.erro', "Equipamento de ID '{$id}' não encontrado. Erro !");
+    } else {
+      //dd( $res);
+      return view('equipamento.edit')->with('res', $res)->with('marcas', $marcas)->with('forns', $forns);
     }
   }
 
@@ -103,22 +102,14 @@ class EquipamentosController extends Controller
   {
     // dd($request->all());
 
-    try {
-      DB::beginTransaction();
-      $res = Equipamento::find($request->id);
+    $dadosEquipamento = $request->only(['id', 'nome', 'id_fornecedor', 'id_marca']);
+    $equipa = $this->equipReposit->update($dadosEquipamento);
 
-      //$equipamento->fill($request->all());
-      //$equipamento->update();
 
-      $res->update($request->all());
-      DB::commit();
+    if ($equipa) {
       return to_route('equipamentos.listar')
         ->with('mensagem.sucesso', "Equipamento '{$request->nome}' atualizado com sucesso");
-
-      
-    } catch (\Throwable $th) {
-      DB::rollback();
-      //Erro: '{$th}' retirado - em caso de erro acrescentar e testar
+    } else { //Erro: '{$th}' retirado - em caso de erro acrescentar e testar
       return to_route('equipamentos.listar')
         ->with('mensagem.erro', "Equipamento de ID '{$request->id}' não encontrado ou erro na atualização. Erro !");
     }

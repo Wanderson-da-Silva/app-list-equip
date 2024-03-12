@@ -39,7 +39,10 @@ class FornecedoresController extends Controller
   {
     try {
       DB::beginTransaction();
-      $forn = Fornecedor::create($request->all());
+
+      $dadosFornecedor = $request->only(['nome', 'CNPJ']);
+
+      $forn = Fornecedor::create($dadosFornecedor);
       DB::commit();
 
       return to_route('fornecedores.listar')
