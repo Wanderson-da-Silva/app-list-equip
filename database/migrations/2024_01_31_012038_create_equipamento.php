@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nome');
             $table->string('id_marca');
             $table->string('id_fornecedor');
+            $table->boolean('status');
             $table->timestamps();
         });
     }

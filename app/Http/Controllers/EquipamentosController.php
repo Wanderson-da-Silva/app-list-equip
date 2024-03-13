@@ -8,11 +8,13 @@ use App\Models\Marca;
 use App\Models\Equipamento;
 use App\Repositorios\EquipamentoRepositorio;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+
 
 class EquipamentosController extends Controller
 {
-
+//essa interface de repositorio está conectada com o eloquentEquipamentoRepositorio
+//ver no providers, RepositorioProvider = ele linka o EquipamentoRepositorio com EloquentEquipamento... 
+//e confg\app no Provider onde é indicado para carregar o provider
   public function __construct(private EquipamentoRepositorio $equipReposit)
   {
   }
