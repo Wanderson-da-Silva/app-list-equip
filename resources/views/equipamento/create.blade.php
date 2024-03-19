@@ -4,7 +4,7 @@
         #custom-button {
   width: 100px;
   height: 40px;
-  background-color: green;
+  background-color: #44aec3;
   color: white;
   border: none;
   border-radius: 20px;
@@ -13,7 +13,7 @@
 #custom-button.clicked {
   width: 100px;
   height: 40px;
-  background-color: red;
+  background-color: #6e7b89;
   color: white;
   border: none;
   border-radius: 20px;
@@ -24,7 +24,7 @@
   content: "";
   width: 20px;
   height: 20px;
-  background-color: grey;
+  background-color:#c3c9cf;
   border-radius: 50%;
   position: absolute;
   top: 10px;
@@ -43,13 +43,13 @@
     @csrf
 
     <div class="row mb-3">
-      <div class="mb-3 col-8">
+      <div class="col-5">
         <labe class="form-label" for="nome"> Nome: </label>
-          <input type="text" class="form-control" id="nome" name="nome" value="{{ null !== old('nome')?old('nome'): null }}">
+          <input type="text" class="form-control" id="nome" name="nome" value="{{ null !== old('nome')?old('nome'): null }}" maxlength="55">
 
       </div>
       
-      <div class="col-4">
+      <div class="col-3">
         <label class="form-label text-right">Marca:</label>
         <select type="text" class="form-control" name="id_marca" id="id_marca">
           @isset($marcas)
@@ -64,7 +64,7 @@
           @endif
         </select><br />
       </div>
-      <div class="col-4">
+      <div class="col-3">
         <label class="form-label text-right">Fornecedor:</label>
         <select type="text" class="form-control" name="id_fornecedor" id="id_fornecedor">
           @isset($forns)
@@ -81,7 +81,7 @@
       </div>
       <!-- Crie o botão -->
       <button id="custom-button" type="button">Ativo</button>
-      <input type="checkbox" id="status" name="status"/>
+      <input type="hidden" id="status" name="status" />
     <script>
         const button = document.getElementById("custom-button");
         const checkbox = document.getElementById("status");
@@ -89,10 +89,10 @@ button.addEventListener("click", () => {
   button.classList.toggle("clicked");
   if (button.classList.contains("clicked")) {
       button.textContent = "Inativo";
-      checkbox.checked = false;
+      checkbox.value = false;
     } else {
       button.textContent = "Ativo";
-      checkbox.checked = true;
+      checkbox.value = true;
     }
 });
     </script>

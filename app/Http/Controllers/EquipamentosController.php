@@ -7,8 +7,9 @@ use App\Models\Fornecedor;
 use App\Models\Marca;
 use App\Models\Equipamento;
 use App\Repositorios\EquipamentoRepositorio;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 
 class EquipamentosController extends Controller
 {
@@ -21,6 +22,7 @@ class EquipamentosController extends Controller
 
   public function index(Request $request)
   {
+    
     $equipamentos = Equipamento::all();
 
     // verificando se mensagem existe na sessao
@@ -48,7 +50,7 @@ class EquipamentosController extends Controller
   public function store(EquipamentosFormRequest $request)
   {
 
-    $dadosEquipamento = $request->only(['nome', 'id_fornecedor', 'id_marca']);
+    $dadosEquipamento = $request->only(['nome', 'id_fornecedor', 'id_marca','status']);
 
     $equipa = $this->equipReposit->add($dadosEquipamento);
     if ($equipa === true) {
@@ -102,9 +104,15 @@ class EquipamentosController extends Controller
 
   public function update(EquipamentosFormRequest $request)
   {
-    // dd($request->all());
+     //dd($request->all());
 
-    $dadosEquipamento = $request->only(['id', 'nome', 'id_fornecedor', 'id_marca']);
+    $dadosEquipamento = $request->only(['id', 'nome', 'id_fornecedor', 'id_marca','status']);
+
+    if($dadosEquipamento['status']=="false"){
+      $dadosEquipamento['status']=0;
+    }else{$dadosEquipamento['status']=1;}
+
+    //dd($dadosEquipamento);
     $equipa = $this->equipReposit->update($dadosEquipamento);
 
 

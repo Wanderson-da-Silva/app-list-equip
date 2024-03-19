@@ -3,6 +3,8 @@
 use App\Http\Controllers\EquipamentosController;
 use App\Http\Controllers\MarcasController;
 use App\Http\Controllers\FornecedoresController;
+use App\Http\Controllers\LoginController;
+use App\Http\Middleware\Autenticador;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,12 +28,21 @@ Route::get('/', function () {
 
 Route::controller(EquipamentosController::class)->group(function(){
 
-    Route::get('/equipamento', 'index')->name('equipamentos.listar');
+    Route::get('/equipamento', 'index')->name('equipamentos.listar')->middleware(Autenticador::class);
     Route::get('/equipamento/create', 'create')->name('equipamento.criar');
     Route::post('/equipamento/salvar','store')->name('equipamento.salvar');
     Route::get('/equipamento/editar/{equipamento}', 'edit')->name('equipamento.editar');
+    
     Route::post('/equipamento/atualizar', 'update')->name('equipamento.atualizar');
     Route::post('/equipamento/destroy/{equipamento}',  'destroy')->name('equipamento.deletar');
+
+});
+
+Route::controller(LoginController::class)->group(function(){
+    Route::get('/login', 'index')->name('login');
+    Route::post('/login/logar', 'logar')->name('login.logar');
+    Route::get('/login/cadastroindex', 'cadastroindex')->name('login.cadastroindex');
+    Route::post('/login/cadastro', 'cadastro')->name('login.cadastro');
 });
 
 Route::controller(FornecedoresController::class)->group(function(){
