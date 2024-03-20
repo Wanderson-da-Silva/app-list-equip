@@ -38,13 +38,14 @@
         </li>
         
       </ul>
-      @if(Auth::user())
+      <!--if(Auth::user())-->
+      @auth
       <li class="nav-item d-flex">
     
-      <a class="nav-link" href="{{route('login.dest')}}">{{Auth::user()}}</a>
+      <a class="nav-link" href="{{route('login.dest')}}">Sair</a>
     
 </li>
-@endif
+@endauth
     </div>
   </div>
 </nav>

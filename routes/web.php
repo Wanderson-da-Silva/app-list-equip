@@ -43,7 +43,7 @@ Route::controller(LoginController::class)->group(function(){
     Route::post('/login/logar', 'logar')->name('login.logar');
     Route::get('/login/cadastroindex', 'cadastroindex')->name('login.cadastroindex');
     Route::post('/login/cadastro', 'cadastro')->name('login.cadastro');
-    Route::post('/login', 'destroy')->name('login.dest');
+    Route::get('/login/dest', 'destroy')->name('login.dest');
 });
 
 Route::controller(FornecedoresController::class)->group(function(){
