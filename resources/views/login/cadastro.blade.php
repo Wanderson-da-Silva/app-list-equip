@@ -20,6 +20,11 @@
           <input type="text" class="form-control" id="password" name="password" value="{{ null !== old('password')?old('password'): null }}">
 
       </div>
+      <div class="mb-3 col-8">
+        <labe class="form-label" for="nome"> Confirmar Senha: </label>
+          <input type="text" class="form-control" id="password_confirmation" name="password_confirmation" value="{{ null !== old('password_confirmation')?old('password_confirmation'): null }}">
+
+      </div>
       
     </div>
 

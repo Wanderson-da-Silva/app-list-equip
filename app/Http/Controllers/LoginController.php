@@ -25,6 +25,7 @@ class LoginController extends Controller
     if(!Auth::attempt($request->only(['email','password']))){
         return redirect()->back()->withErrors(['Usuaio não cadastrado!']);
     }
+    //Auth::login($request->only(['email','password']));
     return to_route('equipamentos.listar');
     //return "tentando!";
   }
@@ -36,18 +37,20 @@ class LoginController extends Controller
   }
   public function cadastro(Request $request)
   {
-    $dadoslogin =$request->only(['email','password','name']);
+    $dadoslogin =$request->except(['_token']);
     $dadoslogin['password']= Hash::make($dadoslogin['password']);
     $equipa = $this->logReposit->add($dadoslogin);
-
+    //dd($equipa);
     Auth::login($equipa);
 
-    return view('equipamentos.listar');
+    return to_route('equipamentos.listar');
   }
 
   public function destroy()
   {
+    Auth::logout();
 
+    return to_route('login');
    
   }
 
