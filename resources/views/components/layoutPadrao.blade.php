@@ -6,6 +6,7 @@
     <title>{{ $title }}</title>
     <!--asset vai na pasta public e acessa o arquivo app.css-->
     <link rel ="stylesheet" href="{{ asset('css/app.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     
 </head>
 <body>
@@ -19,12 +20,17 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
+      @auth
+      <li class="nav-item">
+          <a class="nav-link" href="{{route('equipamentos.listar')}}">Equipamento</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
+          <a class="nav-link" href="{{route('marcas.listar')}}">Marca</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{route('fornecedores.listar')}}">Fornecedor</a>
+        </li>
+        @endauth
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Dropdown
