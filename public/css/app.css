@@ -11965,3 +11965,16 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
+/* lista de itensindex */
+li.list-group-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+/* botoes da lista index */
+.button-list.col-md-3 {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  grid-gap: 10px;
+}

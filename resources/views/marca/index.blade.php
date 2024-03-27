@@ -17,14 +17,14 @@
 <ul class="list-group">
     @isset($marcas)
     @foreach($marcas as $marca) 
-    <li class="list-group-item  d-flex justify-content-between aling-items-center">  {{$marca->nome}} 
-    <div class="aling-items-center d-flex justify-content-between">
-    <form action="{{ route('marca.deletar', $marca->id ) }}" method="post" class="ms-2">
+    <li class="list-group-item">  {{$marca->nome}} 
+    <div class="button-list col-md-3">
+    <form action="{{ route('marca.deletar', $marca->id ) }}" method="post" class="md-2">
     @csrf
-            <button class="btn btn-dark mb-2">x</button>
+            <button class="btn btn-dark md-2">x</button>
         </form>
         
-        <a href="{{ route('marca.editar', $marca->id )}}" class="btn btn-danger btn-sm">Editar</a>
+        <a href="{{ route('marca.editar', $marca->id )}}" class="btn btn-danger md-2">Editar</a>
         </div>
         </li>
     @endforeach
